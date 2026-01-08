@@ -1,0 +1,52 @@
+﻿@model IEnumerable<Projekt_zaliczeniowy.Models.Zgloszenie>
+
+@{
+    ViewData["Title"] = "Lista zgłoszeń";
+}
+
+<h1>Lista zgłoszeń</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Dodaj nowe zgłoszenie</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Tytuł</th>
+            <th>Priorytet</th>
+            <th>Kategoria</th>
+            <th>Data</th>
+            <th>Akcje</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Tytul</td>
+                <td>
+                   
+                    @if (item.Priorytet?.Nazwa == "Krytyczny")
+                    {
+                        <span class="text-danger fw-bold">@item.Priorytet?.Nazwa</span>
+                    }
+                    else
+                    {
+
+                        @item.Priorytet?.Nazwa
+                    }
+                </td>
+                <td>@item.Kategoria?.Nazwa</td>
+                <td>@item.DataUtworzenia.ToShortDateString()</td>
+                <td>
+                 
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="text-danger">Usuń</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

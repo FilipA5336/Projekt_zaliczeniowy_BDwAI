@@ -4,49 +4,81 @@
     ViewData["Title"] = "Lista zgłoszeń";
 }
 
-<h1>Lista zgłoszeń</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Lista zgłoszeń</h1>
+    <a asp-action="Create" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> Dodaj nowe zgłoszenie
+    </a>
+</div>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Dodaj nowe zgłoszenie</a>
-</p>
-
-<table class="table">
-    <thead>
+<table class="table table-hover table-striped">
+    <thead class="table-dark">
         <tr>
             <th>Tytuł</th>
             <th>Priorytet</th>
             <th>Kategoria</th>
-            <th>Data</th>
-            <th>Akcje</th>
+            <th>Data zgłoszenia</th>
+            <th>Autor</th>
+            <th class="text-center">Akcje</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>@item.Tytul</td>
+            <tr class="align-middle">
+                <td class="fw-bold">
+                    @item.Tytul
+                </td>
                 <td>
-                   
+                  
                     @if (item.Priorytet?.Nazwa == "Krytyczny")
                     {
-                        <span class="text-danger fw-bold">@item.Priorytet?.Nazwa</span>
+                        <span class="badge rounded-pill bg-danger">@item.Priorytet?.Nazwa</span>
+                    }
+                    else if (item.Priorytet?.Nazwa == "Wysoki")
+                    {
+                        <span class="badge rounded-pill bg-warning text-dark">@item.Priorytet?.Nazwa</span>
+                    }
+                    else if (item.Priorytet?.Nazwa == "Niski")
+                    {
+                        <span class="badge rounded-pill bg-success">@item.Priorytet?.Nazwa</span>
                     }
                     else
                     {
-
-                        @item.Priorytet?.Nazwa
+                        <span class="badge rounded-pill bg-secondary">@item.Priorytet?.Nazwa</span>
                     }
                 </td>
-                <td>@item.Kategoria?.Nazwa</td>
-                <td>@item.DataUtworzenia.ToShortDateString()</td>
                 <td>
-                 
+                    @item.Kategoria?.Nazwa
+                </td>
+                <td>
+                    @item.DataUtworzenia.ToString("dd.MM.yyyy HH:mm")
+                </td>
+                <td>
+                    <small class="text-muted">@item.UzytkownikId</small>
+                </td>
+                <td class="text-center">
+                    
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm text-white mx-1">
+                        Szczegóły
+                    </a>
+
+                    
                     @if (User.IsInRole("Admin"))
                     {
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="text-danger">Usuń</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm mx-1">
+                            Usuń
+                        </a>
                     }
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center mt-4">
+        Brak zgłoszeń w systemie. Dodaj pierwsze zgłoszenie!
+    </div>
+}

@@ -1,0 +1,108 @@
+﻿@model Projekt_zaliczeniowy.Models.Zgloszenie
+
+@{
+    ViewData["Title"] = "Szczegóły zgłoszenia";
+}
+
+<h1>@Model.Tytul</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Kategoria
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Kategoria?.Nazwa
+        </dd>
+
+        <dt class="col-sm-2">
+            Priorytet
+        </dt>
+        <dd class="col-sm-10">
+            
+            @if (Model.Priorytet?.Nazwa == "Krytyczny")
+            {
+                <span class="badge bg-danger">@Model.Priorytet?.Nazwa</span>
+            }
+            else if (Model.Priorytet?.Nazwa == "Wysoki")
+            {
+                <span class="badge bg-warning text-dark">@Model.Priorytet?.Nazwa</span>
+            }
+            else
+            {
+                <span class="badge bg-success">@Model.Priorytet?.Nazwa</span>
+            }
+        </dd>
+
+        <dt class="col-sm-2">
+            Data utworzenia
+        </dt>
+        <dd class="col-sm-10">
+            @Model.DataUtworzenia
+        </dd>
+
+        <dt class="col-sm-2">
+            Zgłaszający
+        </dt>
+        <dd class="col-sm-10">
+            @Model.UzytkownikId
+        </dd>
+
+        <dt class="col-sm-2">
+            Opis problemu
+        </dt>
+        <dd class="col-sm-10 p-3 border bg-light rounded">
+            @Model.Opis
+        </dd>
+    </dl>
+</div>
+
+
+<div class="mt-5">
+    <h3>Komentarze (@(Model.Komentarze?.Count ?? 0))</h3>
+    <hr />
+
+    @if (Model.Komentarze != null && Model.Komentarze.Any())
+    {
+        @foreach (var kom in Model.Komentarze.OrderByDescending(k => k.DataDodania))
+        {
+            <div class="card mb-3">
+                <div class="card-body">
+                    <p class="card-text">@kom.Tresc</p>
+                    <footer class="blockquote-footer">
+                        <small class="text-muted">
+                            Dodane przez <strong>@kom.Autor</strong> dnia @kom.DataDodania
+                        </small>
+                    </footer>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p class="text-muted">Brak komentarzy. Bądź pierwszy!</p>
+    }
+
+    
+    <div class="card mt-4 bg-light">
+        <div class="card-body">
+            <h5 class="card-title">Dodaj komentarz</h5>
+            <form asp-action="AddComment" method="post">
+               
+                <input type="hidden" name="ZgloszenieId" value="@Model.Id" />
+
+                <div class="form-group mb-3">
+                    <textarea name="Tresc" class="form-control" rows="3" placeholder="Wpisz treść komentarza..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Wyślij komentarz</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4 pb-5">
+   
+    <a asp-action="Index" class="btn btn-secondary">Powrót do listy</a>
+</div>

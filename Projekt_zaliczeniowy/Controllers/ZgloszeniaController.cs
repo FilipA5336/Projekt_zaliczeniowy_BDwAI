@@ -76,5 +76,38 @@ namespace Projekt_zaliczeniowy.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var zgloszenie = await _context.Zgloszenia
+                .Include(z => z.Kategoria)
+                .Include(z => z.Priorytet)
+                .Include(z => z.Komentarze)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (zgloszenie == null) return NotFound();
+
+            return View(zgloszenie);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddComment(int ZgloszenieId, string Tresc)
+        {
+            if (!string.IsNullOrWhiteSpace(Tresc))
+            {
+                var komentarz = new Komentarz
+                {
+                    ZgloszenieId = ZgloszenieId,
+                    Tresc = Tresc,
+                    Autor = User.Identity?.Name,
+                    DataDodania = DateTime.Now
+                };
+                _context.Komentarze.Add(komentarz);
+                await _context.SaveChangesAsync();
+            }
+           
+            return RedirectToAction("Index");
+        }
     }
 }

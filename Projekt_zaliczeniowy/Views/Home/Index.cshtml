@@ -1,8 +1,63 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Strona główna";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center mt-5">
+    <h1 class="display-4 mb-3">System Zarządzania Zgłoszeniami</h1>
+
+    @if (User.Identity != null && User.Identity.IsAuthenticated)
+    {
+       
+        <div class="alert alert-success d-inline-block p-4 mt-3">
+            <h4 class="alert-heading">Witaj, @User.Identity.Name!</h4>
+            <p class="mb-0">Masz pełny dostęp do systemu.</p>
+        </div>
+
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-5 col-lg-4 mb-3">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Przeglądaj zgłoszenia</h5>
+                        <p class="card-text text-muted">Sprawdź listę aktualnych błędów i status prac.</p>
+                        <a asp-controller="Zgloszenia" asp-action="Index" class="btn btn-primary w-100">
+                            Lista zgłoszeń
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-5 col-lg-4 mb-3">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Zgłoś nowy problem</h5>
+                        <p class="card-text text-muted">Znalazłeś błąd? Opisz go i przypisz priorytet.</p>
+                        <a asp-controller="Zgloszenia" asp-action="Create" class="btn btn-success w-100">
+                            Dodaj zgłoszenie
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+       
+        <div class="p-5 bg-light border rounded-3 mt-4">
+            <h2>Wymagane uwierzytelnienie</h2>
+            <p class="lead text-muted mt-3">
+                Aby móc przeglądać listę błędów oraz tworzyć nowe zgłoszenia, musisz posiadać konto w systemie.
+            </p>
+            <hr class="my-4">
+            <p>Zaloguj się na swoje konto lub utwórz nowe, jeśli jeszcze go nie posiadasz.</p>
+
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                <a class="btn btn-primary btn-lg px-4 gap-3" asp-area="Identity" asp-page="/Account/Login">
+                    Zaloguj się
+                </a>
+                <a class="btn btn-outline-secondary btn-lg px-4" asp-area="Identity" asp-page="/Account/Register">
+                    Zarejestruj się
+                </a>
+            </div>
+        </div>
+    }
 </div>

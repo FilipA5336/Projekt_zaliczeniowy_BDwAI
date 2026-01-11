@@ -60,15 +60,14 @@
                 <td class="text-center">
                     
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm text-white mx-1">
-                        Szczegóły
-                    </a>
-
+                        Szczegóły</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm mx-1">
+                        Edytuj</a>
                     
                     @if (User.IsInRole("Admin"))
                     {
                         <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm mx-1">
-                            Usuń
-                        </a>
+                            Usuń</a>
                     }
                 </td>
             </tr>

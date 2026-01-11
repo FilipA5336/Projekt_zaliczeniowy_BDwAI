@@ -109,5 +109,50 @@ namespace Projekt_zaliczeniowy.Controllers
            
             return RedirectToAction("Index");
         }
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var zgloszenie = await _context.Zgloszenia.FindAsync(id);
+            if (zgloszenie == null) return NotFound();
+
+      
+            if (!User.IsInRole("Admin") && zgloszenie.UzytkownikId != User.Identity.Name)
+            {
+                return Forbid();
+            }
+
+            ViewData["KategoriaId"] = new SelectList(_context.Kategorie, "Id", "Nazwa", zgloszenie.KategoriaId);
+            ViewData["PriorytetId"] = new SelectList(_context.Priorytety, "Id", "Nazwa", zgloszenie.PriorytetId);
+            return View(zgloszenie);
+        }
+
+       
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Tytul,Opis,KategoriaId,PriorytetId,DataUtworzenia,UzytkownikId")] Zgloszenie zgloszenie)
+        {
+            if (id != zgloszenie.Id) return NotFound();
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(zgloszenie);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_context.Zgloszenia.Any(e => e.Id == zgloszenie.Id)) return NotFound();
+                    else throw;
+                }
+                return RedirectToAction(nameof(Index));
+            }
+
+            
+            ViewData["KategoriaId"] = new SelectList(_context.Kategorie, "Id", "Nazwa", zgloszenie.KategoriaId);
+            ViewData["PriorytetId"] = new SelectList(_context.Priorytety, "Id", "Nazwa", zgloszenie.PriorytetId);
+            return View(zgloszenie);
+        }
     }
 }

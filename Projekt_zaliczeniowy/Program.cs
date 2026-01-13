@@ -13,8 +13,10 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => {
     options.SignIn.RequireConfirmedAccount = false;
     options.Password.RequireDigit = true;
- 
-    options.Password.RequiredLength = 5;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireUppercase = true; 
+    options.Password.RequireLowercase = true;
 })
 .AddRoles<IdentityRole>()
 
@@ -82,7 +84,7 @@ using (var scope = app.Services.CreateScope())
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Wyst¹pi³ b³¹d podczas tworzenia u¿ytkowników testowych.");
+        logger.LogError(ex, "Wystï¿½piï¿½ bï¿½ï¿½d podczas tworzenia uï¿½ytkownikï¿½w testowych.");
     }
 }
 
